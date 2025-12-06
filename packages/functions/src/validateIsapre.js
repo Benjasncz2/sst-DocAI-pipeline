@@ -9,7 +9,6 @@ export const main = async (event) => {
             const message = JSON.parse(record.Sns.Message);
             console.log("Validando datos de:", message.Id);
 
-            // Ejemplo simple de validación
             const camposValidos = message.Resultados?.length > 0;
 
             const payload = {

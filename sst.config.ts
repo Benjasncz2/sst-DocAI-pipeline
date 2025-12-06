@@ -9,7 +9,7 @@ export default $config({
         };
     },
     async run() {
-        
+
         const bucket = new sst.aws.Bucket("DocAiBucket", {
             public: false,
         });
@@ -31,8 +31,8 @@ export default $config({
             SNS_ISAPRE_ARN: isapreTopic.arn,
             DOCUMENT_AI_PROJECT_ID: "river-lane-475622-h4",
             DOCUMENT_AI_LOCATION: "us",
-            DOCUMENT_AI_PROCESSOR_ID: "b9319e0d7e047ae5",
-            DOCUMENT_AI_PROCESSOR_VERSION_ID: "pretrained-foundation-model-v1.5.1-2025-08-07",
+            DOCUMENT_AI_PROCESSOR_ID: "96bb7d8eb391dbe4",
+            DOCUMENT_AI_PROCESSOR_VERSION_ID: "88c682cff5acfff7",
         };
 
         const uploadHandler = new sst.aws.Function("UploadHandler", {

@@ -11,10 +11,25 @@ export const main = async (event) => {
             const message = JSON.parse(record.Sns.Message);
             console.log("Mensaje recibido desde SNS:", message);
 
+            const camposConConfianza = {};
+
+            if (message.Resultados && Array.isArray(message.Resultados)) {
+                console.log("Procesando resultados:", JSON.stringify(message.Resultados, null, 2));
+                message.Resultados.forEach((resultado) => {
+                    const nombreCampo = resultado.campo;
+                    console.log(`Campo detectado: "${nombreCampo}" = "${resultado.valor}"`);
+                    camposConConfianza[nombreCampo] = {
+                        valor: resultado.valor,
+                        confianza: resultado.confianza
+                    };
+                });
+            }
+
             const item = {
                 Id: message.Id,
                 FechaProcesamiento: new Date().toISOString(),
-                Resultados: message.Resultados,
+                DatosCompletos: camposConConfianza,
+                ResultadosOriginales: message.Resultados,
             };
 
             const command = new PutCommand({

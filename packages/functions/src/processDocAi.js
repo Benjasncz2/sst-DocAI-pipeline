@@ -31,19 +31,42 @@ export const main = async (event) => {
             process.env.DOCUMENT_AI_PROCESSOR_VERSION_ID
         );
 
-        const [result] = await client.processDocument({
+        const request = {
             name,
-            rawDocument: { content: imageBuffer, mimeType: "image/jpeg" },
-        });
+            rawDocument: {
+                content: imageBuffer,
+                mimeType: "image/jpeg"
+            },
+            fieldMask: {
+                paths: ["text", "entities", "pages.page_number"]
+            }
+        };
+
+        console.log("Procesando documento con processorVersion:", name);
+        const [result] = await client.processDocument(request);
 
         const doc = result.document;
-        const entities =
-            doc.entities?.map((e) => ({
-                campo: e.type_,
-                valor: e.mentionText,
-                confianza: e.confidence,
-            })) || [];
 
+        console.log("Total de entidades detectadas:", doc.entities?.length || 0);
+
+        const entities =
+            doc.entities?.map((e, index) => {
+                const tipo = e.type || e.type_ || e['type'] || e['type_'] || 'undefined';
+                console.log(`Entidad ${index}:`);
+                console.log(`  - e.type: "${e.type}"`);
+                console.log(`  - e.type_: "${e.type_}"`);
+                console.log(`  - Tipo final: "${tipo}"`);
+                console.log(`  - Valor: "${e.mentionText}"`);
+                console.log(`  - Confianza: ${e.confidence}`);
+
+                return {
+                    campo: tipo,
+                    valor: e.mentionText,
+                    confianza: e.confidence,
+                };
+            }) || [];
+
+        console.log("Resultados procesados:", JSON.stringify(entities, null, 2));
         const message = JSON.stringify({ Id: key, Resultados: entities });
 
         const publishCommand = new PublishCommand({
