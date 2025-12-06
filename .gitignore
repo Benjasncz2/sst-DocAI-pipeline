@@ -1,0 +1,10 @@
+node_modules
+.sst
+.env
+.DS_Store
+*.log
+.serverless
+dist
+build
+credenciales.json
+credenciales.json
